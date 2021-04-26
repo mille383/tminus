@@ -1,23 +1,20 @@
 from datetime import datetime as dt
+from app import db
 
-class Post:
-    _list = []
-
-    def __init__(self, _id, image, email, title, body):
-        self._id = _id
-        self.email = email
-        self.image = image
-        self.title = title
-        self.body = body
-        self.created_on = dt.utcnow()
-        self._list.append(self)
+class Post(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    email = db.Column(db.String(50))
+    image = db.Column(db.String)
+    title = db.Column(db.String)
+    body = db.Column(db.Text)
+    created_on = db.Column(db.DateTime, default=dt.utcnow)
 
     # def from_dict(self):
     #     pass
 
     def to_dict(self):
         return {
-            'id': self._id,
+            'id': self.id,
             'email': self.email,
             'image': self.image,
             'title': self.title,

@@ -12,12 +12,15 @@ from flask_login import login_user, logout_user, current_user
 @app.route('/', methods=['GET', 'POST'])
 def home():
     if request.method == 'POST':
-        p = Post(email='derekh@codingtemple.com', body=request.form.get('body_text'))
+        p = Post(email=current_user.email, body=request.form.get('body_text'), user_id=current_user.get_id())
         db.session.add(p)
         db.session.commit()
         flash('Blog post created successfully', 'info')
         return redirect(url_for('home'))
-    return render_template('index.html')
+    context = {
+        'posts': [p.to_dict() for p in Post.query.filter_by(user_id=current_user.get_id()).all()]
+    }
+    return render_template('index.html', **context)
 
 
 @app.route('/contact')

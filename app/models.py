@@ -11,6 +11,7 @@ class User(UserMixin, db.Model):
     email = db.Column(db.String, unique=True)
     created_on = db.Column(db.DateTime, default=dt.utcnow)
     password = db.Column(db.String)
+    posts = db.relationship('Post', backref='user', lazy='dynamic')
 
     def save(self):
         # set password as the hashed password from set_password method
@@ -55,6 +56,7 @@ class Post(db.Model):
     email = db.Column(db.String(50))
     body = db.Column(db.Text)
     created_on = db.Column(db.DateTime, default=dt.utcnow)
+    user_id = db.Column(db.ForeignKey('user.id'))
 
     # def from_dict(self):
     #     pass
@@ -63,9 +65,8 @@ class Post(db.Model):
         return {
             'id': self.id,
             'email': self.email,
-            # 'image': self.image,
-            # 'title': self.title,
             'body': self.body,
+            'user': User.query.get(self.user_id).to_dict(),
             'created_on': dt.strftime(self.created_on, '%m/%d/%Y')
         }
 

@@ -1,25 +1,41 @@
+<!-- Trying to add a page to update the current user's info...not quite getting it yet. Bit off more than I can chew -->
 {% extends 'layout.html' %}
 
 {% block content %}
-<h4>Home</h4>
-<p>Hello {{ current_user.first_name }} </p>
+<h4>Update User Information</h4>
+
 <hr>
-{% if not current_user.is_authenticated %}
-<p>You must be logged in to create a post</p>
-{% else %}
+
 <form action="{{ url_for('home') }}" method="POST" s>
     <div class="form-group">
         <div class="row">
-            <div class="col-md-10">
-                <input name="body_text" class="form-control" type="text" placeholder="Make a new post" />
+            <div class="col-md-4 float-right">
+                <p>First Name: </p>
             </div>
-            <div class="col-md-2">
-                <input class="btn btn-info" type="submit" value="Post" />
+            <div class="col-md-8">
+                <input name="body_text" class="form-control" type="text" value="{{ usedetail[0].first_name }}" />
             </div>
         </div>
+        <div class="row">
+            <div class="col-md-4 float-right">
+                <p>Last Name: </p>
+            </div>
+            <div class="col-md-8">
+                <input name="body_text" class="form-control" type="text" value="{{ usedetail[0].last_name }}" />
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4 float-right">
+                <p>Email: </p>
+            </div>
+            <div class="col-md-8">
+                <input name="body_text" class="form-control" type="text" value="{{ usedetail[0].email }}" />
+            </div>
+        </div>
+        <input class="btn btn-info" type="submit" value="Update Info" />
     </div>
 </form>
-{% endif %}
+
 <hr>
 
 {% endblock content %}

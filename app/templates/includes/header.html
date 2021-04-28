@@ -16,8 +16,14 @@
                 <li class="nav-item">
                     <a class="nav-link" href="{{ url_for('blog') }}">View all Posts</a>
                 </li>
+                <!-- get the search functionality working...at some point -->
+                <!-- <form class="form-inline my-2 my-lg-0">
+                    <input class="form-control mr-sm-2" type="search" placeholder="Search for a user" aria-label="Search">
+                    <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+                </form> -->
             </ul>
             <ul class="navbar-nav m1-auto">
+                
                 {% if not current_user.is_authenticated %}
                     <li class="nav-item">
                         <a class="nav-link" href="{{ url_for('login') }}">Login</a>
@@ -28,10 +34,10 @@
                 {% else %}
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true"
-                            aria-expanded="false">Logged in as {{ current_user.first_name }}</a>
+                            aria-expanded="false">Logged in as {{ current_user.first_name }} {{ current_user.last_name[0] }}</a>
                         <div class="dropdown-menu">
+                            <a class="dropdown-item" href="{{ url_for('updateinfo') }}">Edit Profile (TBC)</a>
                             <a class="dropdown-item" href="{{ url_for('logout') }}">Logout</a>
-                            <a class="dropdown-item" href="#">Edit Profile (TBC)</a>
                         </div>
                     </li>
                 {% endif %}

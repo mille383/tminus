@@ -67,3 +67,10 @@ def register():
         flash('Successful registration', 'info')
         return redirect(url_for('login'))
     return render_template('register.html')
+
+@app.route('/updateinfo', methods=['GET', 'POST'])
+def updateinfo():
+    context = {
+        'usedetail': [u.to_dict() for u in User.query.filter_by(id=current_user.get_id())]
+    }
+    return render_template('updateinfo.html', **context)

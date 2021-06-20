@@ -14,6 +14,8 @@ import plotly.express as px
 # set this to 'dev' to avoid the api call limit
 dev = ''
 
+# credit to: https://thespacedevs.com/ for all data contained herein
+
 @app.route('/', methods=['GET', 'POST'])
 def home():
     if request.method == 'POST':

@@ -1,0 +1,22 @@
+{% extends 'layout.html' %}
+{% set active_page = 'contact' %}
+
+{% block content %}
+    
+    <form action="{{ url_for('contact') }}" method="POST">
+        <div class="col-6 offset-3">
+            <div class="form-group contact-form">
+            
+                <input type="text" class="form-control bg-transparent contact-box text-light" name="name" placeholder="Name">
+            </div>
+            <div class="form-group">
+                <input type="text" class="form-control bg-transparent contact-box text-light" name="email" placeholder="Email">
+            </div>
+            <div class="form-group">
+                <textarea class="form-control bg-transparent contact-box text-light" rows="3" name="comments" placeholder="Comments / Feedback"></textarea>
+            </div>
+            <button type="submit" class="btn btn-outline-light btn-block">Submit</button>
+        </div>
+    </form>
+    
+{% endblock %}

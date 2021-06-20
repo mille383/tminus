@@ -1,37 +1,147 @@
 {% extends 'layout.html' %}
+{% set active_page = 'home' %}
 
 {% block content %}
-    <h4>Home</h4>
-    <p>Hello {{ current_user.first_name }} </p>
-    <hr>
-    {% if not current_user.is_authenticated %}
-        <p>You must be logged in to create a post</p>
-    {% else %}
-        <form action="{{ url_for('home') }}" method="POST" s>
-            <div class = "form-group">
-                <div class="row">
-                    <div class="col-md-10">
-                        <input name="body_text" class="form-control" type="text" placeholder="Make a new post" />
-                    </div>
-                    <div class="col-md-2">
-                        <input class="btn btn-info" type="submit" value="Post" />
-                    </div>
-                </div>
-            </div>
-        </form>
-    {% endif %}
+    
     <hr>
     
-    <ul class="list-group">
-        {% for p in posts %}
-        <li class="list-group-item">
-            <p>{{ p.body }}</p>
-            <div>
-                <span>
-                    <cite>&mdash; {{ p.user.first_name }} {{ p.user.last_name }}</cite>
-                </span>
+    <form action="{{ url_for('home') }}" method="POST">
+        <div class="form-group">
+            <div class="row">
+                <div class="input-group col-md-3 offset-4">
+                    <!-- # 1 is Starship
+                                    # 2 is Mercury
+                                    # 3 is ? should be Gemini
+                                    # 4 is Apollo
+                                    # 5 is falcon 9 ... crewed?
+                                    # 6 is
+                                    # 7 is ?
+                                    # 8 is Soyuz
+                                    # 9 is
+                                    # 10 is Voskhod
+                                    # 11 is CRS?
+                                    # 12 shuttle? -->
+                    <select name="provider" class="btn btn-secondary selectpicker form-control">
+                        <option>Select a launch provider</option>
+                        <option value=''>View all upcoming</option>
+                        <option value='united'>United Launch Alliance</option>
+                        <option value='roscocosmos'>Russian</option>
+                        <option value='spacex'>SpaceX</option>
+                        <option value='blue'>Blue Origin</option>
+                        <option value='china'>Chinese Launchers</option>
+                        <option value='lab'>Rocket Lab</option>
+                        <option value='ariane'>Arianespace (ESA)</option>
+                        <option value='virgin'>Virgin Orbit</option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <input class="btn btn-outline-light btn-block" type="submit" value="View Launches" />
+                </div>
             </div>
-        </li>
-        {% endfor %}
-    </ul>
+        </div>
+    </form>
+    
+    <hr>
+    
+    <div class="container">
+        {% if single %}
+        <div class="card text-white border-light">
+            <img class="card-img-top" src="{{ single['image'] }}" style="height: 200px; max-width: 300px;">
+            <div class="card-body">
+                <h5 class="card-title">{{ single['name'] }}</h5>
+                {% if single['net'] %}
+                    <h6>{{ single['net'][:10] }} @ {{ single['net'][11:] }} 
+                        <div class="float-right">
+                            {{ single['launch_service_provider']['name'] }}
+                        </div>
+                    </h6>
+                {% endif %}
+                {% if single['mission'] %}
+                    <p class="card-text">{{ single['mission']['description'] }}</p>
+                {% endif %}
+            </div>
+            {% if astronauts %}
+                {% for a in astronauts %}
+                <div class="card col-4 offset-4">
+                    <img class="card-img-top" src="{{ a['profile_image'] }}" style="height: 200px; width: 200px;">
+            
+                    <div class="card-body">
+                        <h5 class="card-title">{{ a['name'] }}</h5>
+                        <a href="{{ url_for('astronautid', id = a['id']) }}" class="btn btn-primary">View astronaut details</a>
+                        <!-- <h6>{{ single['net'] }}
+                                            <div class="float-right">
+                                                {{ single['launch_service_provider']['name'] }}
+                                            </div>
+                                        </h6>
+                                        <p class="card-text">{{ single['mission']['description'] }}</p> -->
+                    </div>
+                </div>
+                {% endfor %}
+            {% endif %}
+        </div>
+        {% else %}
+            {% for l in upcoming %}
+                <div class="card text-white border-light col-md-8 offset-2 card-upcoming">
+                    <div class="row">
+                        <h5 class="card-title col-8">{{ l['name'] }}</h5>
+                        <h6 class="card-title col-4 float-right">{{ l['launch_service_provider']['name'] }}</h6>
+                    </div>
+                    
+                    <div class="card-body">
+                        <div class="row">
+                            {% if l['mission'] is not none %}
+                                <p class="card-text col">{{ l['mission']['description'][:150] }} ...</p>
+                            {% endif %}
+                            <div class="col">
+                                <img class="card-img-top" src="{{ l['image'] }}" style="height: 200px; max-width: 300px;">
+                            </div>
+                        </div>
+                        
+                        <h6 >Launching: {{ l['net'][:10] }} @ {{ l['net'][11:] }}</h6>
+                        <div id="dateDiv" data-value = "{{ l['net'][:10] }}"></div>
+                        
+                        <p id="countdown"></p>
+                        
+                        <a href="{{ url_for('upcomingid', id = l['id']) }}" class="btn btn-outline-light btn-details">View mission details</a>
+                    </div>
+                </div>
+            {% endfor %}
+        {% endif %}
+    </div>
+    
+    
+    
+
+
+<!-- <script>
+    // Set the date we're counting down to
+    var countDownDate = new Date("Jan 5, 2022 15:37:25").getTime();
+
+    // Update the count down every 1 second
+    var x = setInterval(function () {
+
+        // Get today's date and time
+        var now = new Date().getTime();
+
+        // Find the distance between now and the count down date
+        var distance = countDownDate - now;
+
+        // Time calculations for days, hours, minutes and seconds
+        var days = Math.floor(distance / (1000 * 60 * 60 * 24));
+        var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+        var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+        // Display the result in the element with id="demo"
+        document.getElementById("demo").innerHTML = days + "d " + hours + "h "
+            + minutes + "m " + seconds + "s ";
+
+        // If the count down is finished, write some text
+        if (distance < 0) {
+            clearInterval(x);
+            document.getElementById("demo").innerHTML = "EXPIRED";
+        }
+    }, 1000);
+</script> -->
+
 {% endblock content %}

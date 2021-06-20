@@ -1,48 +1,33 @@
 <header>
-    <nav class="navbar navbar-expand-sm navbar-dark bg-dark">
-        <a class="navbar-brand" href="{{ url_for('home') }}">Fakebook</a>
+    <nav class="navbar navbar-expand-sm navbar-dark">
+        <img src="../../static/css/logo.png" style="height: 60px; width: 60px;"></img>
+        <!-- <a class="navbar-brand" href="{{ url_for('home') }}">T Minus</a> -->
         <button class="navbar-toggler d-lg-none" type="button" data-toggle="collapse" data-target="#collapsibleNavId"
             aria-controls="collapsibleNavId" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="collapsibleNavId">
             <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
-                <li class="nav-item active">
-                    <a class="nav-link" href="{{ url_for('home') }}">Home</a>
+                <li class="nav-item {{ 'active' if active_page == 'home' else '' }} ">
+                    <a class="nav-link" href="{{ url_for('home') }}">Upcoming Launches</a>
                 </li>
-                <!-- <li class="nav-item">
-                    <a class="nav-link" href="{{ url_for('contact') }}">Contact</a>
-                </li> -->
-                <li class="nav-item">
-                    <a class="nav-link" href="{{ url_for('blog') }}">View all Posts</a>
+                <li class="nav-item {{ 'active' if active_page == 'historical' else '' }}">
+                    <a class="nav-link" href="{{ url_for('historical') }}">Historical Launches</a>
                 </li>
-                <!-- get the search functionality working...at some point -->
-                <!-- <form class="form-inline my-2 my-lg-0">
-                    <input class="form-control mr-sm-2" type="search" placeholder="Search for a user" aria-label="Search">
-                    <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-                </form> -->
+                <li class="nav-item {{ 'active' if active_page == 'astronauts' else '' }}">
+                    <a class="nav-link" href="{{ url_for('astronauts') }}">Astronauts</a>
+                </li>
+                <li class="nav-item {{ 'active' if active_page == 'pads' else '' }}">
+                    <a class="nav-link" href="{{ url_for('pads') }}">Launch Pads</a>
+                </li>
+                <li class="nav-item {{ 'active' if active_page == 'visuals' else '' }}">
+                    <a class="nav-link" href="{{ url_for('visuals') }}">Visualize</a>
+                </li>
+                <li class="nav-item {{ 'active' if active_page == 'contact' else '' }}">
+                    <a class="nav-link disabled" href="{{ url_for('contact') }}">Contact</a>
+                </li>
             </ul>
-            <ul class="navbar-nav m1-auto">
-                
-                {% if not current_user.is_authenticated %}
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('login') }}">Login</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('register') }}">Register</a>
-                    </li>
-                {% else %}
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true"
-                            aria-expanded="false">Logged in as {{ current_user.first_name }} {{ current_user.last_name[0] }}</a>
-                        <div class="dropdown-menu">
-                            <a class="dropdown-item" href="{{ url_for('updateinfo') }}">Edit Profile (TBC)</a>
-                            <a class="dropdown-item" href="{{ url_for('logout') }}">Logout</a>
-                        </div>
-                    </li>
-                {% endif %}
-                
-            </ul>
+            
         </div>
     </nav>
 </header>

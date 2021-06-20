@@ -1,0 +1,70 @@
+{% extends 'layout.html' %}
+{% set active_page = 'astronauts' %}
+
+{% block content %}
+    
+    <form action="{{ url_for('astronauts') }}" method="POST">
+        <div class="form-group">
+            <div class="row" style= "margin-top: 20px;">
+                <div class="col-md-10">
+                    <input name="astronaut" class="form-control" type="search" placeholder="Search for an astronaut (last name)" />
+                </div>
+                <div class="col-md-2">
+                    <button type="submit" class="btn btn-outline-light btn-block">Search</submit>
+                    <!-- <input class="btn btn-info btn-block" type="submit" value="Search" /> -->
+                </div>
+            </div>
+        </div>
+    </form>
+
+    <div class="container">
+        {% if single %}
+        <div class="card text-light border-light">
+            <img class="card-img-top" src="{{ single['profile_image'] }}" style="height: 300px; width: 300px;">
+            <div class="card-body">
+                <h5 class="card-title" style="margin-top: 0px;">{{ single['name'] }}</h5>
+                <p class="card-text"><i>{{ single['nationality'] }}</i></p>
+                <p class="card-text">Born: {{ single['date_of_birth'] }}</p>
+                {% if single['date_of_death'] %}
+                    <p class="card-text">Died: {{ single['date_of_death'] }}</p>
+                {% endif %}
+                <hr class="border-light">
+                <p class="card-text">{{ single['bio'] }}</p><br>
+                <h5>Flights:</h5>
+                    <div class="row">
+                    {% for f in flights %}
+                            <div class="card card-body col-md-3 card-astro text-light border-light">
+                                <h5 class="card-text">{{ f['name'] }}</h5>
+                                <p class="card-text">{{ f['net'][:10] }}</p>
+                                <a href="{{ url_for('historicalid', id = f['id']) }}" class = "btn btn-outline-light">Mission Details</a>
+                            </div>
+                    {% endfor %}
+                    </div>
+        
+            </div>
+           
+        </div>
+        {% else %}
+        {% for l in launches %}
+        <div class="card col-4">
+            <img class="card-img-top" src="{{ l['image'] }}" style="height: 200px;">
+            <div class="card-body">
+                <h5 class="card-title">{{ l['name'] }}</h5>
+                <h6>{{ l['net'] }}
+                    <div class="float-right">
+                        {{ l['launch_service_provider']['name'] }}
+                    </div>
+                </h6>
+                <p class="card-text">{{ l['mission']['description'][30] }}</p>
+                <a href="{{ url_for('historicalid', id = l['id']) }}" class="btn btn-outline-dark">View mission details</a>
+            </div>
+        </div>
+        {% endfor %}
+    
+    
+        {% endif %}
+    </div>
+    
+    <hr>
+        
+{% endblock content %}

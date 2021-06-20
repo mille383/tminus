@@ -1,0 +1,101 @@
+{% extends 'layout.html' %}
+{% set active_page = 'historical' %}
+
+{% block content %}
+    <hr>
+    {% if not current_user.is_authenticated %}
+        <p>You must be logged in to view the data</p>
+    {% else %}
+    <form action="{{ url_for('historical') }}" method="POST">
+        <div class="form-group">
+            <div class="row">
+                <div class="input-group col-md-3">
+                    <!-- # 1 is Starship
+                            # 2 is Mercury
+                            # 3 is ? should be Gemini
+                            # 4 is Apollo
+                            # 5 is falcon 9 ... crewed?
+                            # 6 is
+                            # 7 is ?
+                            # 8 is Soyuz
+                            # 9 is
+                            # 10 is Voskhod
+                            # 11 is CRS?
+                            # 12 shuttle? -->
+                    <select name="company_select" class="selectpicker form-control">
+                        <option>Select a program</option>
+                        <option value=1>Starship</option>
+                        <option value=2>Mercury</option>
+                        <option value=3>Gemini</option>
+                        <option value=4>Apollo</option>
+                        <option value=5>Crewed Falcon 9</option>
+                        <option value=6>Shuttle</option>
+                        <option value=8>Soyuz</option>
+                        <option value=10>Voskhod</option>
+                        <option value=11>Commercial Resupply</option>
+                        <option value=12>Shuttle-Mir</option>
+                        <option value=17>ISS</option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <input class="btn btn-info btn-block" type="submit" value="Search" />
+                </div>
+            </div>
+        </div>
+    
+    </form>
+    
+    <div class="container">
+        {% if single %}
+            <div class="card">
+                <img class="card-img-top" src="{{ single['image'] }}" style="height: 200px;">
+                <div class="card-body">
+                    <h5 class="card-title">{{ single['name'] }}</h5>
+                    <h6>{{ single['net'] }}
+                        <div class="float-right">
+                            {{ single['launch_service_provider']['name'] }}
+                        </div>
+                    </h6>
+                    <p class="card-text">{{ single['mission']['description'] }}</p>
+                </div>
+                {% for a in astronauts %}
+                    <div class="card col-4 offset-4">
+                        <img class="card-img-top" src="{{ a['profile_image'] }}" style="height: 200px; width: 200px;">
+                        
+                        <div class="card-body">
+                            <h5 class="card-title">{{ a['name'] }}</h5>
+                            <a href="{{ url_for('astronautid', id = a['id']) }}" class="btn btn-primary">View astronaut details</a>
+                            <!-- <h6>{{ single['net'] }}
+                                <div class="float-right">
+                                    {{ single['launch_service_provider']['name'] }}
+                                </div>
+                            </h6>
+                            <p class="card-text">{{ single['mission']['description'] }}</p> -->
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            {% for l in launches %}
+            <div class="card">
+                <img class="card-img-top" src="{{ l['image'] }}" style="height: 200px;">
+                <div class="card-body">
+                    <h5 class="card-title">{{ l['name'] }}</h5>
+                    <h6>{{ l['net'] }}
+                        <div class="float-right">
+                            {{ l['launch_service_provider']['name'] }}
+                        </div>
+                    </h6>
+                    <p class="card-text">{{ l['mission']['description'] }}</p>
+                    <a href="{{ url_for('historicalid', id = l['id']) }}" class="btn btn-primary">View mission details</a>
+                </div>
+            </div>
+            {% endfor %}
+        
+            
+        {% endif %}
+    </div>
+
+    {% endif %}
+        
+{% endblock content %}

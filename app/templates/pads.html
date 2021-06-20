@@ -1,0 +1,90 @@
+<!-- {% extends 'layout.html' %} -->
+<!DOCTYPE html>
+{% set active_page = 'pads' %}
+
+{% block content %}
+    <script src="https://js.api.here.com/v3/3.1/mapsjs-core.js" type="text/javascript" charset="utf-8"></script>
+    <script src="https://js.api.here.com/v3/3.1/mapsjs-service.js" type="text/javascript" charset="utf-8"></script>
+    <script src="https://js.api.here.com/v3/3.1/mapsjs-mapevents.js" type="text/javascript" charset="utf-8"></script>
+    <script src="https://js.api.here.com/v3/3.1/mapsjs-ui.js" type="text/javascript" charset="utf-8"></script>
+    <link rel="stylesheet" type="text/css" href="https://js.api.here.com/v3/3.1/mapsjs-ui.css" />
+    <hr>
+    
+    
+    
+    <div style="width: 100%; height: 100%" id='mapContainer'></div>
+    
+
+    <script>
+        
+        // Initialize the platform object:
+        var platform = new H.service.Platform({
+            'apikey': 'Luh5eHudFBBAQuhUKmXXRaFGoNxAHRWnwekyRY96o7o'
+        });
+        var pad1 = '{{ pads | tojson}}';
+        
+        var pad = JSON.parse(pad1);
+        
+
+        // Obtain the default map types from the platform object
+        var maptypes = platform.createDefaultLayers();
+        
+        // Instantiate (and display) a map object:
+        var map = new H.Map(
+            document.getElementById('mapContainer'),
+            maptypes.vector.normal.map,
+            {
+                zoom: 10,
+                center: { lat: 28.47, lng: -80.54 }
+            });
+
+        var mapEvents = new H.mapevents.MapEvents(map);
+
+        map.addEventListener('tap', function(evt) {
+            console.log(evt.type, evt.currentPointer.type);
+        });
+
+        // Instantiate the default behavior, providing the mapEvents object:
+        var behavior = new H.mapevents.Behavior(mapEvents);
+        
+        pad.forEach(function(item) {
+            // item = JSON.parse(item);
+            function addMarkerToGroup(group, coordinate, html) {
+                var marker = new H.map.Marker(coordinate);
+                // add custom data to the marker
+                marker.setData(html);
+                group.addObject(marker);
+            }
+        
+            function addInfoBubble(map) {
+                var group = new H.map.Group();
+
+                map.addObject(group);
+
+                // add 'tap' event listener, that opens info bubble, to the group
+                group.addEventListener('tap', function (evt) {
+                    // event target is the marker itself, group is a parent event target
+                    // for all objects that it contains
+                    var bubble = new H.ui.InfoBubble(evt.target.getGeometry(), {
+                        // read custom data
+                        content: evt.target.getData()
+                    });
+                    // show info bubble
+                    ui.addBubble(bubble);
+                }, false);
+
+                addMarkerToGroup(group, { lat: item.latitude, lng: item.longitude },
+                    '<h4>' + item.name + '</h4>' +
+                    '<h5>' + item.location + '</h5><hr>' +
+                    '<p>Has supported ' + item.launch_count + ' launches</p>');
+
+            }
+            addInfoBubble(map);
+        });
+        // Create the default UI:
+        var ui = H.ui.UI.createDefault(map, maptypes);
+
+    </script>
+    
+{% endblock content %}
+</html>
